@@ -1,0 +1,88 @@
+import org.gradle.api.artifacts.maven.MavenDeployment
+
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+    compile 'com.aliyun.oss:aliyun-sdk-oss:2.3.0'
+    compile 'joda-time:joda-time:2.4'
+}
+
+repositories {
+    mavenCentral()
+}
+
+def isReleaseVersion = !(version ==~ /(?i).*SNAPSHOT$/)
+if (isReleaseVersion) {
+    project.ext['upload.url'] = project.ext['upload.release.url']
+} else {
+    project.ext['upload.url'] = project.ext['upload.snapshot.url']
+}
+
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from "$buildDir/docs/javadoc"
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            repository(url: project.ext['upload.url']) {
+                authentication(userName: project.ext['upload.user'], password: project.ext['upload.password'])
+            }
+            pom.version = project.version
+            pom.artifactId = "${project.artifact}"
+            pom.project {
+                name 'Gradle OSS Plugin'
+                description 'Gradle plugin for Aliyun OSS buckets'
+                url 'https://github.com/kevinmmarlow/gradle-oss-plugin'
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'kevinmmarlow'
+                        name 'Kevin Marlow'
+                        email 'kevinmmarlow@gmail.com'
+                        url 'https://github.com/kevinmmarlow'
+                        roles {
+                            role 'Developer'
+                        }
+                    }
+                }
+                scm {
+                    connection 'scm:git:https://github.com/kevinmmarlow/gradle-oss-plugin.git'
+                    developerConnection 'scm:git:https://github.com/kevinmmarlow/gradle-oss-plugin.git'
+                    tag 'HEAD'
+                    url 'https://github.com/kevinmmarlow/gradle-oss-plugin'
+                }
+            }
+        }
+    }
+}
