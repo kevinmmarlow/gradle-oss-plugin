@@ -1,0 +1,26 @@
+buildscript {
+    dependencies {
+        classpath 'com.github.kevinmmarlow:gradle-oss-plugin:0.0.1'
+        classpath 'com.aliyun.oss:aliyun-sdk-oss:2.3.0'
+        classpath 'joda-time:joda-time:2.4'
+    }
+    repositories {
+        mavenCentral()
+    }
+}
+apply plugin: 'oss'
+
+oss {
+    bucket = 'your-bucket'
+    accessKey = 'your-access-key'
+    secretKey = 'your-secret-key'
+    upload {
+        key = 'gradle-oss-plugin-0.0.1.jar'
+        file = '../build/libs/gradle-oss-plugin-0.0.1.jar'
+        link = 'latest/gradle-plugin.jar'
+    }
+    download {
+        key = 'latest/gradle-plugin.jar'
+        saveTo = 'gradle-pugin.jar'
+    }
+}

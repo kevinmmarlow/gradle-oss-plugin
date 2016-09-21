@@ -1,6 +1,8 @@
 /build
 example/build
+.idea/
 .gradle
 *.iws
 *.ipr
 *.iml
+*.DS_Store
