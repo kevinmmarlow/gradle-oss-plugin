@@ -17,8 +17,6 @@ class OSSUploadTask extends DefaultTask {
     String key
     @Input
     String file
-    @Input
-    String link
 
     public OSSUploadTask() {
         bucket = ''
@@ -48,7 +46,7 @@ class OSSUploadTask extends DefaultTask {
 
         AliyunOSSClient client = new AliyunOSSClient(endpoint, accessKey, secretKey)
 
-        String presigned = client.uploadFile(bucketName, keyValue, fileName, getLink())
+        String presigned = client.uploadFile(bucketName, keyValue, fileName)
         logger.quiet "Uploaded \"" + fileName + "\" to \"" + keyValue + "\""
         logger.quiet "Downloadable from " + presigned + " within next 30 days"
     }

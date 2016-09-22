@@ -51,7 +51,7 @@ public class AliyunOSSClient {
         key.startsWith("/") || key.startsWith("http") ? key : "/" + key
     }
 
-     public String uploadFile(String bucketName, String key, String fileName, String link) {
+     public String uploadFile(String bucketName, String key, String fileName) {
 
          try {
 

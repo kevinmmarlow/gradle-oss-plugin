@@ -6,5 +6,4 @@ class OSSUploadExtension {
     String secretKey
     String key = ''
     String file = ''
-    String link = ''
 }

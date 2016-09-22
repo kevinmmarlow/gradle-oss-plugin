@@ -25,7 +25,6 @@ public class OSSPlugin implements Plugin<Project> {
             conventionMapping.accessKey = { ossExt.accessKey }
             conventionMapping.secretKey = { ossExt.secretKey }
             conventionMapping.key = { ossUploadExt.key }
-            conventionMapping.link = { ossUploadExt.link }
             conventionMapping.file = { ossUploadExt.file }
         }
     }
