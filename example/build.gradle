@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.github.kevinmmarlow:gradle-oss-plugin:0.0.1'
+        classpath 'com.github.kevinmmarlow:gradle-oss-plugin:1.0.0'
         classpath 'com.aliyun.oss:aliyun-sdk-oss:2.3.0'
         classpath 'joda-time:joda-time:2.4'
     }
