@@ -17,7 +17,6 @@ oss {
     upload {
         key = 'gradle-oss-plugin-0.0.1.jar'
         file = '../build/libs/gradle-oss-plugin-0.0.1.jar'
-        link = 'latest/gradle-plugin.jar'
     }
     download {
         key = 'latest/gradle-plugin.jar'
