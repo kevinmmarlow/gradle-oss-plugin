@@ -1,7 +1,7 @@
 Gradle OSS Plugin
 ----------------
 
-This plugin can be used to transfer files to and from Aliyun OSS buckets.
+This plugin can be used to transfer files to and from Aliyun OSS buckets. It is based on the wondeful plugin written by [Suresh Khatri](https://github.com/skhatri/gradle-s3-plugin). Be sure to check his out if you are looking for S3 uploads from your gradle buildscript.
 
 The plugin creates two tasks:
 
@@ -52,39 +52,26 @@ oss {
 
 
 ```
-task uploadAppJar(type: com.github.kevinmmarlow.ossaliyun.plugin.ossUploadTask) {
-    key = 'some_other_upload_file_name.jar'
-    file = 'my_local_file.jar'
+task uploadReleaseAPK(type: com.github.kevinmmarlow.ossaliyun.plugin.ossUploadTask) {
+    key = 'my_remote_release_file.apk'
+    file = 'my_local_release_file.apk'
+}
+
+task uploadDebugAPK(type: com.github.kevinmmarlow.ossaliyun.plugin.ossUploadTask) {
+    key = 'my_remote_debug_file.apk'
+    file = 'my_local_debug_file.apk'
 }
 ```
-Then I can call "gradle uploadAppJar" to upload yet another artifact to oss.
 
-This can be useful, if uploading hash checksums of the artifacts. For instance, I can upload sha1 value of the artifact so my automated artifact deployment task could download checksum file first to decide whether downloading the big artifact is worth it.
-
-```
-task writeHash() {
-    String hashValue = computeHash('../build/libs/gradle-oss-plugin-master-1.0.1-SNAPSHOT.jar')
-    file('../build/libs/gradle-oss-plugin-master-1.0.1-SNAPSHOT.sha1').write(hashValue)
-}
-
-task uploadHash(type: com.github.skhatri.ossaws.plugin.ossUploadTask) {
-    key = 'gradle-oss-plugin-1.0.0-something.sha1'
-    file = '../build/libs/gradle-oss-plugin-master-1.0.1-SNAPSHOT.sha1'
-    link = 'latest/gradle-plugin.sha1'
-}
-
-task ossUpload(dependsOn:['uploadAppJar', 'writeHash', 'uploadHash']) {
-}
-```
-Now, calling ossUpload will upload jar and the hash file.
+Then I can call `./gradlew uploadReleaseAPK` to upload my release artifact to oss and `./gradlew uploadDebugAPK` to upload my debug version.
 
 ### Downloading more than one artifact ###
 
-Similarly, I can download more artifacts by simply creating ad-hoc Download task. I am downloading the previously uploaded sha1 file of the artifact using the task below.
+Similarly, I can download more artifacts by simply creating ad-hoc Download task.
 
 ```
 task ossDownload(type: com.github.kevinmmarlow.ossaliyun.plugin.ossDownloadTask) {
-    key = 'latest/gradle-plugin.sha1'
-    saveTo = 'gradle-plugin.txt'
+    key = 'remote_file_name.apk'
+    saveTo = 'path/to/local_file_name.apk'
 }
 ```
