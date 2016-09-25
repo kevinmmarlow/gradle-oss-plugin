@@ -4,6 +4,9 @@ import com.aliyun.oss.OSSClient
 import com.aliyun.oss.model.OSSObject
 import com.aliyun.oss.model.ObjectMetadata
 import com.aliyun.oss.model.PutObjectRequest
+import org.gradle.api.GradleException
+import org.gradle.api.GradleScriptException
+import org.gradle.api.InvalidUserDataException
 import org.joda.time.LocalDateTime;
 
 public class AliyunOSSClient {
@@ -13,23 +16,23 @@ public class AliyunOSSClient {
         ossClient = new OSSClient(endpoint, accessKey, secretKey);
 	}
 
-	public static void validateAliyunAccount(final String accessKey, final String secretKey) {
+	public static void validateAliyunAccount(final String accessKey, final String secretKey) throws InvalidUserDataException {
 		try {
             OSSClient client = new OSSClient(accessKey, secretKey);
 			client.listBuckets();
 		} catch (Exception e) {
-			throw new AliyunOSSException("Unable to validate Aliyun account：" + e.getMessage());
+            throw new InvalidUserDataException("Unable to validate Aliyun account：" + e.getMessage())
 		}
 	}
 
 
 	public static String getBucketLocation(String accessKey,
-                                           String secretKey, String bucketName) throws AliyunOSSException{
+                                           String secretKey, String bucketName) throws InvalidUserDataException{
 		try {
             OSSClient client = new OSSClient(accessKey, secretKey);
             return client.getBucketLocation(bucketName);
-		} catch (Exception ignored) {
-			throw new AliyunOSSException("Bucket not found with name：" + bucketName);
+		} catch (Exception e) {
+            throw new InvalidUserDataException("Bucket not found with name：" + bucketName, e)
 		}
 	}
     
@@ -46,7 +49,7 @@ public class AliyunOSSClient {
              return ossClient.generatePresignedUrl(bucketName, key, new LocalDateTime().plusDays(30).toDate())
 
          } catch (Exception e) {
-             throw new AliyunOSSException("Aliyun Upload Exception ", e)
+             throw new GradleScriptException("OSS Upload Exception", e)
          }
      }
 
@@ -58,7 +61,7 @@ public class AliyunOSSClient {
              fs.write(bytes);
              fs.close();
          } catch (Exception e) {
-             throw new AliyunOSSException("OSS Download Exception ", e);
+             throw new GradleScriptException("OSS Download Exception ", e);
          }
      }
 }
