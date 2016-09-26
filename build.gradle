@@ -8,11 +8,12 @@ apply plugin: 'signing'
 dependencies {
     compile localGroovy()
     compile gradleApi()
-    compile 'com.aliyun.oss:aliyun-sdk-oss:2.3.0'
+    compile 'com.github.kevinmmarlow:aliyun-oss-java-sdk:2.3.1'
     compile 'joda-time:joda-time:2.4'
 }
 
 repositories {
+    maven { url "https://jitpack.io" }
     mavenCentral()
 }
 
